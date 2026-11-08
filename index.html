@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#07111f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="METAVERSE"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<title>METAVERSE WORLD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111f;color:#eef6ff;font-family:Inter,'Noto Sans KR',sans-serif}canvas{display:block}#game{position:fixed;inset:0}#hud{position:fixed;inset:0;pointer-events:none}.glass{background:rgba(7,17,31,.72);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(16px);box-shadow:0 12px 36px #0004;border-radius:16px}.top{position:absolute;left:18px;right:18px;top:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.brand{padding:12px 16px}.brand b{letter-spacing:2px;font-size:13px}.brand small{display:block;color:#9fb4ca;font-size:10px;margin-top:4px}.stats{padding:10px 14px;display:flex;gap:14px;font-size:12px;color:#c7d7e8}.stats strong{color:#5eead4}.panel{position:absolute;top:86px;left:18px;width:220px;padding:14px;pointer-events:auto}.panel h3{font-size:12px;letter-spacing:1px;color:#9fb4ca;margin:0 0 12px}.action{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;color:#dce9f7;font-size:12px;cursor:pointer;border:1px solid transparent}.action:hover,.action.active{background:#ffffff12;border-color:#ffffff20}.action span{font-size:16px;width:22px;text-align:center}.hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);padding:10px 15px;color:#b9cadb;font-size:11px;white-space:nowrap}.right{position:absolute;right:18px;top:86px;width:230px;padding:14px;pointer-events:auto}.right h3{font-size:12px;color:#9fb4ca;margin:0 0 10px}.feed{height:160px;overflow:auto;font-size:11px;color:#d6e3f0;line-height:1.5}.feed p{margin:5px 0;overflow-wrap:anywhere}.chatrow{display:flex;gap:6px;margin-top:10px}.chatrow input,.modal input{min-width:0;width:100%;background:#ffffff12;border:1px solid #ffffff20;color:white;border-radius:9px;padding:10px;outline:none}.btn{border:0;border-radius:9px;background:#5eead4;color:#06201e;font-weight:800;padding:9px 12px;cursor:pointer}.bottom{position:absolute;bottom:18px;right:18px;display:flex;gap:8px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:min(720px,calc(100vw - 36px))}.pill{padding:11px 13px;border-radius:12px;background:#0b1a2bdb;border:1px solid #ffffff24;color:#eaf4ff;font-size:11px;cursor:pointer}.pill:active{transform:scale(.97)}#joystick{display:none;position:absolute;left:24px;bottom:32px;width:116px;height:116px;border-radius:50%;background:#ffffff16;border:1px solid #ffffff35;pointer-events:auto;touch-action:none}#stick{position:absolute;width:48px;height:48px;border-radius:50%;background:#5eead4cc;left:33px;top:33px;box-shadow:0 4px 20px #0007}.modal{display:none;position:fixed;inset:0;background:#020813aa;z-index:5;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.dialog{width:min(420px,100%);padding:22px}.dialog h2{font-size:18px;margin:0 0 8px}.dialog p{font-size:12px;color:#a9bdcf;line-height:1.6}.dialog .row{display:flex;gap:8px;margin-top:12px}.dialog button{margin-top:14px}.tag{display:inline-block;border:1px solid #ffffff22;border-radius:99px;padding:5px 9px;font-size:10px;color:#9fb4ca;margin:3px 3px 3px 0}#toast{position:absolute;top:76px;left:50%;transform:translateX(-50%);background:#0b1a2b;border:1px solid #ffffff22;border-radius:30px;padding:9px 14px;font-size:11px;opacity:0;transition:.2s}#toast.show{opacity:1}@media(max-width:700px){.panel{display:none}.right{top:auto;bottom:154px;right:12px;width:185px}.top{left:10px;right:10px;top:10px}.brand{padding:10px}.stats{gap:8px;padding:10px;font-size:10px}.hint{bottom:12px;font-size:9px}.bottom{right:10px;bottom:12px;gap:5px;max-width:calc(100vw - 20px)}.pill{padding:10px;font-size:10px}#joystick{display:block}.feed{height:85px}.right h3{margin-bottom:6px}}
+
+/* 11.1 UI LAYOUT: one tool dock, no overlapping legacy panels */
+#mw-tool-dock{position:fixed;z-index:12000;top:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:7px;background:rgba(7,17,31,.92);border:1px solid #ffffff30;border-radius:14px;box-shadow:0 8px 28px #0006;pointer-events:auto;max-width:calc(100vw - 420px);overflow-x:auto;white-space:nowrap}
+#mw-tool-dock button{border:1px solid #ffffff25;background:#17394b;color:#eef8ff;border-radius:9px;padding:9px 12px;min-height:40px;font-size:12px;font-weight:700;cursor:pointer;flex:0 0 auto}
+#mw-tool-dock button[aria-pressed="true"]{background:#5eead4;color:#06201e;border-color:#5eead4}
+#mv7panel,#mv9-controls,#mv10-panel{z-index:11000!important;top:76px!important;right:16px!important;left:auto!important;bottom:auto!important;width:min(370px,calc(100vw - 32px))!important;max-height:calc(100dvh - 170px)!important;overflow:auto!important;overscroll-behavior:contain}
+#mv9-controls{max-width:min(370px,calc(100vw - 32px))!important}
+#mv9-controls small{display:block;line-height:1.45;margin-top:8px}
+#mv10-panel{max-height:calc(100dvh - 170px)!important}
+#mv7panel button,#mv9-controls button,#mv10-panel button{min-height:40px;touch-action:manipulation}
+.right{top:auto!important;bottom:82px!important;right:16px!important;width:min(300px,calc(100vw - 32px))!important;z-index:800!important}
+.right .feed{height:110px!important}
+.panel{top:82px!important;left:16px!important;max-height:calc(100dvh - 210px);overflow:auto}
+.bottom{bottom:14px!important;right:14px!important;z-index:850!important;max-width:calc(100vw - 28px)!important}
+.hint{bottom:18px!important;left:50%!important;z-index:700!important;max-width:calc(100vw - 360px);overflow:hidden;text-overflow:ellipsis}
+#mv11-economy{z-index:900!important;top:14px!important;left:14px!important;max-width:260px}
+#mv11-economy span{color:#b9f7e8;font-size:11px}
+#mw-social-controls{left:16px!important;bottom:14px!important;max-width:calc(100vw - 420px)!important;z-index:850!important}
+@media(max-width:900px){
+ #mw-tool-dock{top:66px;left:10px;right:10px;transform:none;max-width:none;justify-content:flex-start}
+ #mv7panel,#mv9-controls,#mv10-panel{top:116px!important;left:10px!important;right:10px!important;width:auto!important;max-height:calc(100dvh - 260px)!important}
+ .panel{top:116px!important;left:10px!important;width:190px!important;max-height:calc(100dvh - 300px)}
+ .right{right:10px!important;bottom:90px!important;width:min(220px,calc(100vw - 220px))!important}
+ .right .feed{height:70px!important}
+ .bottom{left:10px!important;right:10px!important;bottom:10px!important;justify-content:center;max-width:none!important}
+ .pill{padding:9px 10px!important}
+ .hint{display:none}
+ #mw-social-controls{left:10px!important;right:10px!important;bottom:58px!important;max-width:none!important;justify-content:center}
+ #mw-tool-dock button{padding:8px 10px;font-size:11px}
+}
+@media(max-width:520px){
+ #mv11-economy{top:8px!important;left:8px!important;max-width:145px;gap:4px!important}
+ #mv11-economy button{font-size:10px;padding:7px!important}
+ .brand{max-width:155px}
+ .stats{position:absolute;right:0;top:44px}
+ .panel{display:none!important}
+ .right{bottom:112px!important;left:10px!important;right:10px!important;width:auto!important}
+ .right .feed{height:48px!important}
+ .bottom{bottom:8px!important;gap:4px!important}
+ .bottom .pill{font-size:9px!important;padding:8px 7px!important}
+ #mw-tool-dock{top:58px;}
+ #mv7panel,#mv9-controls,#mv10-panel{top:108px!important;max-height:calc(100dvh - 230px)!important}
+}
+
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div id="hud">
+ <div class="top"><div class="brand glass"><b>METAVERSE <span style="color:#5eead4">WORLD</span></b><small>OPEN WORLD · SOCIAL EXPERIENCE</small></div><div class="stats glass"><div>접속 <strong id="online">1</strong>명</div><div>코인 <strong id="coins">120</strong></div><div id="net">연결 중</div></div></div>
+ <div class="panel glass"><h3>WORLD MENU</h3><div class="action" data-open="profile"><span>🧍</span>아바타 꾸미기</div><div class="action" data-open="build"><span>🏗️</span>건물 만들기</div><div class="action" data-open="shop"><span>🛍️</span>월드 상점</div><div class="action" data-life="home"><span>🏠</span>내 집 / 인테리어</div><div class="action" data-life="inventory"><span>🎒</span>소지품 / 창고</div><div class="action" data-life="business"><span>🏪</span>내 상점 운영</div><div class="action" data-life="friends"><span>💬</span>친구 / 쪽지</div><div class="action" data-open="game"><span>🎯</span>미니게임</div><div class="action" data-open="friends"><span>👥</span>접속자 / 친구</div><div class="action" data-open="help"><span>⌨️</span>조작 방법</div></div>
+ <div class="right glass"><h3>WORLD CHAT <span class="tag" id="roomtag">PUBLIC</span></h3><div class="feed" id="feed"><p>월드에 오신 것을 환영합니다!</p></div><div class="chatrow"><input id="chatInput" maxlength="180" placeholder="메시지 입력..."><button class="btn" id="send">전송</button></div></div>
+ <div id="joystick"><div id="stick"></div></div>
+ <div class="bottom"><button class="pill" id="wave">👋 인사</button><button class="pill" id="dance">💃 춤</button><button class="pill" id="sit">🪑 앉기</button><button class="pill" id="emote">😊 감정표현</button><button class="pill" id="ride">🚗 탈것</button><button class="pill" id="voice">🎙 음성</button></div>
+ <div class="hint glass">PC: WASD 이동 · 마우스 드래그 시점 · Space 점프　|　모바일: 왼쪽 조이스틱</div><div id="toast">월드에 오신 것을 환영합니다</div>
+</div>
+<div class="modal" id="modal"><div class="dialog glass"><h2 id="modalTitle">메뉴</h2><div id="modalBody"></div><button class="btn" id="closeModal">닫기</button></div></div>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<script type="module" src="./world.js"></script><script src="./life-world.js"></script><script src="./social-world.js"></script><script src="./world7.js"></script><script src="./world9.js"></script><script src="./world10.js"></script><script src="./world11.js"></script>
+
+<script>
+(()=>{
+ const boot=()=>{
+  if(document.getElementById('mw-tool-dock'))return;
+  const dock=document.createElement('nav');dock.id='mw-tool-dock';dock.setAttribute('aria-label','월드 도구');
+  dock.innerHTML='<button type="button" data-panel="mv7panel" aria-pressed="false">🏗️ 건축·파티</button><button type="button" data-panel="mv9-controls" aria-pressed="false">🏢 층·주택</button><button type="button" data-panel="mv10-panel" aria-pressed="false">🌆 도시 생활</button><button type="button" data-panel="mw-social-controls" aria-pressed="false">👥 계정·친구</button><button type="button" data-panel="close" aria-pressed="false">✕ 닫기</button>';
+  document.body.append(dock);
+  const panels=['mv7panel','mv9-controls','mv10-panel','mw-social-controls'];
+  const setActive=id=>{
+   panels.forEach(pid=>{const el=document.getElementById(pid);if(el)el.style.display=(pid===id?'block':'none')});
+   if(id==='mv7panel')window.dispatchEvent(new Event('mv7-open'));
+   dock.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===id)));
+  };
+  panels.forEach(pid=>{const el=document.getElementById(pid);if(el)el.style.display='none'});
+  // Hide old launch button; the unified dock is now the only entry point.
+  [...document.querySelectorAll('button')].forEach(b=>{if((b.textContent||'').includes('7.0 편집·파티'))b.style.display='none'});
+  dock.addEventListener('click',e=>{const b=e.target.closest('button[data-panel]');if(!b)return;const id=b.dataset.panel;const currently=panels.find(pid=>{const el=document.getElementById(pid);return el&&el.style.display!=='none'});setActive(id==='close'||currently===id?null:id)});
+  // Social controls were previously injected at the bottom-left; make them a dock panel.
+  const social=[...document.querySelectorAll('#hud > div')].find(el=>el.querySelector('#mw-account'));
+  if(social){social.id='mw-social-controls';social.style.display='none'}
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,250));else setTimeout(boot,250);
+ setTimeout(boot,1200);
+})();
+</script>
+
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/service-worker.js").catch(e=>console.warn("PWA service worker:",e)));}</script>
+</body></html>
